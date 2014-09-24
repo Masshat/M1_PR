@@ -1,0 +1,102 @@
+== Participants : 1 ==
+
+   TOUMLILT Ilyas - 3261538
+
+== Fichiers inclus ==
+
+   EXO_1 :
+   -> src/max_func.c : définit la fonction max_func qui retourne le max d'un vecteur d'entiers
+   -> src/max_calcul.c : définition de la fonction principale du programme max_calcul qui retourne le max d'entiers reçus en arguments
+
+   EXO_2 :
+   -> src/nfork.c : création d'une arborescence de processus, contient la fonction nfork(n) qui crée n fils.
+
+   EXO_3 :
+   -> src/exo3.c : fonction exec, code fournis dans l'énoncé
+
+   EXO_4 :
+   -> src/exo4.c : chaîne de processus ( père crée fils, qui crée son fils ... ), macro NB_FILS. Le dernier fils retourne une val aleatoire
+
+   EXO 5 :
+   -> src/exo5.c : synchronisation de processus par signaux
+
+   EXO 6 :
+   -> src/exo6.c : chaîne de processus avec signaux
+
+   EXO 7 :
+   -> src/exo7.c : chaîne de processus, avec synchronisation par chaîne de signaux ( lire la doc sur le fichier pour plus de détails )
+
+== Directives de 'makefile' ==
+
+   all : cree tous les executables, sans les éxecuter.
+
+   max_calcul : produit l'éxecutable max_calcul
+   runexo1 : produit l'éxecutable max_calcul et l'éxecute à la manière de l'exemple énoncé.
+
+   nfork: produit l'éxecutable nfork.
+   runexo2 : produit l'executable nfork, et l'éxecute. 
+
+   exo3: produit l'executable exo3
+   runexo3: produit l'executable exo3 et l'execute
+
+   exo4: produit l'executable processus_creator ( exo4 )
+   runexo4: produit l'executable exo4 et le lance
+
+   exo5: produit l'executable de l'exo5
+   runexo5: produit et execute exo5
+
+   exo6: produit l'exec de l'exo6
+   runexo6: compile/edite les liens/execute l'exo6
+
+   exo7: produit l'exec de l'exo7
+   runexo7: produit l'exec de l'exo7 et l'execute.
+
+   directories : création des répertoires temporaires s'ils n'existent pas déjà
+   clean : Suppression de tous les fichiers binaires, objet et bibliothèques.
+   cleanall : Suppression des répertoires et fichiers temporaires
+
+== Etat d'avancement ==
+
+   EXO 1 : Passage de paramètres, compilation, makefile - OK
+   EXO 2 : N processus fils - OK
+   EXO 3 : Fonction exec - OK
+   EXO 4 : Chaîne de processus - OK
+   EXO 5 : Synchronisation de processus - OK
+   EXO 6 : Fonction kill - OK
+   EXO 7 : Signaux SIGSTOP, SIGCHLD - OK
+
+== Réponses ==
+
+   EXO 2 :
+       - Combien de fils sont-ils créés, processus principal inclus ?
+       --> 4 processus.
+       - Représentez l'arborescence de processus créés, en spécifiant les affichages faites par chaque processus.
+       --> 0 (Proc Principal)
+       	   | *nfork(1)
+       	   |-----------O (Fils 1)
+	   | print:1   | *nfork(2)  
+	   | print:FIN |----------O-----------O
+	   X 	       |print:2	  |(P-FILS 1) |(P-FILS 2)
+	   	       |print:FIN |print:FIN  |print:FIN
+		       X	  X	      X
+
+   EXO 3 :
+       - Combien de fils sont-ils créés, processus principal inclus ?
+       --> 4 processus
+       - Faites l'arvorescence des processus en montrant les affichages de chaque processus.
+       --> O (Proc principal)
+       	   |(i=1, j=0)
+	   |*fork()
+	   |------------------------------O
+	   |(i=2, j=0)			  |(i=2,j=1)
+	   |*fork()			  |*fork()
+	   |-------------O		  |-------------O
+	   |print:2 fils |(i=2,j=2)	  |print:1 fils	|(i=2,j=2)
+	   |	    	 |print:sans fils |	   	|print:sans fils
+	   |		 X	     	  |		X
+	   |		 		  X		
+	   X
+       - Le nombre de processus créés change-t-il ?
+       --> Non.
+       - Et l'affichage ?
+       --> Oui, les petits fils n'affiches plus "sans fils" car leur code a été recouvert par exec.

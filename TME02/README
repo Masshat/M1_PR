@@ -1,0 +1,50 @@
+== Participants : 1 ==
+
+   TOUMLILT Ilyas - 3261538
+
+== Fichiers inclus ==
+
+   EXO_1 :
+   -> src/thread_rand.c : création de N threads, attente de terminaison et passage d'arguments.
+
+   EXO_2 :
+   -> src/exo2.c : reprise de l'exo 1, avec génération de var aléatoire et somme sur une var globale.
+
+   EXO_3 :
+   -> src/exo3.c : reprise de l'exo 1, avec synchronisations en mutex + cond
+
+   EXO_4 :
+   -> src/exo4.c : reprise de l'exo 1, avec détachement 
+
+   EXO_5 :
+   -> src/exo5.c : systèmes de conditions & broadcast pour les barrières
+
+
+== Directives de 'makefile' ==
+
+   all : cree tous les executables, sans les executer.
+
+   thread_rand : compile et edite les liens de l'exo 1 
+   runexo1 : compile/ld/exec exo1
+
+   exo2 : compile et produit l'exec de l'exo 2 
+   runexo2 : exo2 + execution.
+
+   exo3/4/5 : compile + édite les liens de l'exo3/4/5
+   runexo3/4/5 : execute l'exo 3/4/5
+
+
+   directories : création des répertoires temporaires s'ils n'existent pas déjà
+   clean : Suppression de tous les fichiers binaires, objet et bibliothèques.
+   cleanall : Suppression des répertoires et fichiers temporaires
+
+== Etat d'avancement ==
+
+   EXO 1 : Création de threads - OK
+   EXO 2 : Exclusion mutuelle - OK
+   EXO 3 : Synchro - OK
+   EXO 4 : Détachement - OK
+   EXO 5 : Broadcast - OK
+
+== Réponses ==
+

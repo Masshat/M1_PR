@@ -1,0 +1,56 @@
+== Participants : 1 ==
+
+   TOUMLILT Ilyas - 3261538
+
+== Fichiers inclus ==
+
+   EXO_1 :
+   -> src/file_converter.c : création d'une thread par fichier à convertir, converti les caractères des fichiers en paramètre en majuscules.
+
+   EXO_2 :
+   -> src/file_converter_2.c : même principe, avec un nombre de threads limité, qui vont boucler tant qu'il y a des fichiers à traiter.
+
+   EXO_3 :
+   -> src/exo3.c: prod/cons : programme principal + fonctions fournies
+   -> src/thread_stack.c : push & pop functions.
+   -> include/thread_stack.h : headers.
+
+   EXO_4 :
+   -> src/exo4.c : synchronisation entre plusieurs producteurs / consommateurs
+
+   EXO_5 :
+   -> src/exo5.c : chaîne de N threads, avec masque et attente de signaux.
+
+== Directives de 'makefile' ==
+
+   all : cree tous les executables, sans les executer.
+
+   file_converter : compile et edite les liens de l'exo1
+   runexo1 : execute l'exo1 avec deux fichiers de test par defaut
+
+   file_converter_2 : compile + ld ( exo 2 )
+   runexo2 : execute l'exo2 avec un jeu de fichiers test
+
+   exo3 : compile les fichiers de l'exo 3
+   runexo3 : execute exo3
+
+   exo4 : compile + ld exo4
+   runexo4 : execute exo4
+
+   exo5 : compile et produit l'executable bin/exo5
+   runexo5 : exo5 + l'execute
+
+   directories : création des répertoires temporaires s'ils n'existent pas déjà
+   clean : Suppression de tous les fichiers binaires, objet et bibliothèques.
+   cleanall : Suppression des répertoires et fichiers temporaires
+
+== Etat d'avancement ==
+
+   EXO 1 : Traitement concurrent de fichiers avec un nombre illimité de threads - OK
+   EXO 2 : Traitement concurrent de fichiers avec un pool fixe de threads - OK
+   EXO 3 : Producteur / Consommateur - OK
+   EXO 4 : plusieurs prod/cons - OK
+   EXO 5 : Chaîne de threads et signaux - OK
+
+== Réponses ==
+

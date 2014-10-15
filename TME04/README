@@ -1,0 +1,54 @@
+== Participants : 1 ==
+
+   TOUMLILT Ilyas - 3261538
+
+== Fichiers inclus ==
+
+   EXO_1:
+   -> src/exo1.c : création de N propcessus, calcul d'une random_val par fils, récupération par le père par file de messages, le père affiche la somme des vals.
+
+   EXO_2 :
+   -> src/exo2.c : même concept, en mémoire partagée.
+
+   EXO_3 :
+   -> src/exo3.c : Création de N processus, N+1 files de messages, chaque fils communique le nb de valeurs qu'il veut au père, le père lui envoie ce qu'il veut puis chaque fils en fait la somme.
+
+   EXO_4 :
+   -> src/exo4.c : même principe avec une unique file
+
+   EXO_5 :
+   -> src/exo5.c : implémentation du mécanisme d'attente sur barrière en utilisant des semaphores SysV.
+
+== Directives de 'makefile' ==
+
+   all : cree tous les executables, sans les executer.
+
+   exo1 : compile et produit l'executable bin/exo1 de l'exo1
+   runexo1 : compile + ld + execute l'exo1.
+
+   exo2 : compile et produit l'exec bin/exo2 de l'exo2
+   runexo2 : compile + produit l'exec + execute l'exo2
+   
+   exo3 : compile et produit l'exec bin/exo3 de l'exo3
+   runexo3 : compile + produit l'exec + execute l'exo3
+
+   exo4 : ...
+   runexo4 : ...
+
+   exo5 : idem ... produit bin/exo5
+   runexo5 : idem
+
+   directories : création des répertoires temporaires s'ils n'existent pas déjà
+   clean : Suppression de tous les fichiers binaires, objet et bibliothèques.
+   cleanall : Suppression des répertoires et fichiers temporaires
+
+== Etat d'avancement ==
+
+   EXO 1 : Remontée de valeurs par file de messages - OK
+   EXO 2 : Remontée des valeurs par mémoire partagée - OK
+   EXO 3 : Serveur de valeurs aléatoires à files multiples - OK
+   EXO 4 : Serveur de valeurs aléatoires à file unique - OK
+   EXO 5 : Rendez-vous par sémaphores - OK
+
+== Réponses ==
+

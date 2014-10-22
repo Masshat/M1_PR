@@ -1,0 +1,38 @@
+== Participants : 1 ==
+
+   TOUMLILT Ilyas - 3261538
+   
+== Fichiers inclus ==
+
+   EXO_1 :
+   -> src/exo1.c : création de N processus, calcul d'une random_val et stockage dans la shm par fils, récupération par le père pour calcul et affichage de la somme.
+
+   EXO_2 :
+   -> src/exo2.c : rendez-vous barrière par sémaphores, version sans compteur partagé.
+   
+   EXO_3 :
+   -> src/chat_client.c : programme client
+   -> src/chat_server.c : programme serveur
+   
+== Directives de 'makefile' ==
+
+   all : cree tous les executables, sans les executer.
+
+   exo1 : compile et produit l'executable bin/exo1 de l'exo1
+   runexo1 : compile + ld + execute l'exo1.
+
+   exo2 : compile et produit l'executable bin/exo2 de l'exo2
+   runexo2 : exo2 + execution
+
+   directories : création des répertoires temporaires s'ils n'existent pas déjà
+   clean : Suppression de tous les fichiers binaires, objet et bibliothèques.
+   cleanall : Suppression des répertoires et fichiers temporaires
+
+== Etat d'avancement ==
+
+   EXO 1 : Remontée de valeurs par partage de mémoire - OK
+   EXO 2 : Barrière avec sémaphores, sans compteur partagé - OK
+   EXO 3 : j'a ifais u ngrand effort mais ça ne marche toujours pas
+
+== Réponses ==
+   Exo 2 : Oui c'est possible, il suffit que l'un n'agisse pas comme les autres et se mette en attente active sur les entrée avant d'ouvrir la barrière.

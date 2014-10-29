@@ -1,0 +1,77 @@
+== Participants : 1 ==
+
+   TOUMLILT Ilyas - 3261538
+   
+== Fichiers inclus ==
+
+   -> src/testfiles/ : répertoire où seront toujours stockés les fichiers de test.
+   
+   EXO_1 :
+   -> src/tme6exo1.c : fichier fourni avec le TME
+   -> src/exo1.c : fichier fourni modifié pour que la taille du fichier soit toujours égale à 8. ( synchro par signaux )
+
+   EXO_2 :
+   -> src/mycp.c : programme qui recopie intégralement le contenu du fichier fic1 dans fic2. En respectant les contraintes de l'énoncé.
+
+   EXO_3 :
+   -> src/exo3.c : reprend l'exo2, avec plus de contraintes ( utilisation de shm et write d'un seul coup )
+
+   EXO_4 :
+   -> src/exo4.c : Reprend l'exo2 du TME4, sauf que les valeurs aléatoires transmises par les fils, seront remontées au père par écritures dans un fichier.
+
+   EXO_5 :
+   -> src/exo5POSIX.c : programme écrit avec les fonctions POSIX
+   -> src/exo5C.c : programme écrit avec les fonctions lib C
+   -> src/testfiles/testfile_exo5 : petit fichier de test ...
+
+   EXO_6 :
+   -> src/extended-grep.c : recherche d'une chaîne dans tous les fichiers réguliers d'un répertoire.
+
+== Directives de 'makefile' ==
+
+   all : cree tous les executables, sans les executer.
+
+   tme6exo1 : compilation du fichier fourni -> bin/tme6exo1
+   runtme6exo1 : compile + execute le fichier fourni.
+   exo1 : compilation de l'exo1 -> bin/exo1
+   runexo1 : compile + execute l'exo1 
+
+   mycp : compile + produit l'exec bin/mycp
+
+   exo3 : compile et edite les liens de l'exo3 -> bin/exo3
+
+   exo4 : compile et produit l'exec de l'exo4 -> bin/exo4
+   runexo4 : exo4 + exécute le programme
+
+   exo5 : compile + ld les deux exécutables bin/exo5POSIX et bin/exo5C
+
+   extended-grep : produit bin/extended-grep
+
+   directories : création des répertoires temporaires s'ils n'existent pas déjà
+   clean : Suppression de tous les fichiers binaires, objet et bibliothèques.
+   cleanall : Suppression des répertoires et fichiers temporaires
+
+== Etat d'avancement ==
+
+   EXO 1 : Analyse d'exécution - OK
+   EXO 2 : Recopie de fichier par lectures/écritures - OK
+   EXO 3 : Recopie de fichier par mapping - OK
+   EXO 4 : Remontée de valeurs par échange dans un fichier - OK
+   EXO 5 : Fonctions POSIX vs. fonctions C - OK
+   EXO 6 : Fonction grep étendue - OK
+
+== Réponses ==
+
+   Exo 1 : Contenus possibles du fichier selon l'ordre des executions :
+   - A B C D E F : fghie123
+   - A B D C E F : fghie123
+   - A B D E C F : 45hie123
+   - A B D E F C : 45hie123
+   - A D B C E F : 453fghi
+   - A D B E C F : 453fghi
+   - A D B E F C : 453fghi
+   - A D E B C F : 45123hi
+   - A D E B F C : 45123hi
+   - A D E F B C : 45hi123
+
+   Exo 5 : Différence : la lecture est directe en mode POSIX, ce qui fait que tous les processus lisent en concurrence, en mode lib C un seul processus est utilisé pour la lecture.

@@ -27,6 +27,11 @@
    EXO_6 :
    -> src/extended-grep.c : recherche d'une chaîne dans tous les fichiers réguliers d'un répertoire.
 
+   EXO_7 :
+   -> src/exo7.c : inverse le contenu d'un fichier passé en paramètre, produit une autre fichier du même nom + l'extension ".inv"
+
+   EXO_8 :
+   -> src/exo8.c : idem que le 7, en utilisant pread.
 == Directives de 'makefile' ==
 
    all : cree tous les executables, sans les executer.
@@ -47,6 +52,10 @@
 
    extended-grep : produit bin/extended-grep
 
+   exo7 : compile + produit l'exec bin/exo7
+
+   exo8 : produit bin/exo8 ..
+
    directories : création des répertoires temporaires s'ils n'existent pas déjà
    clean : Suppression de tous les fichiers binaires, objet et bibliothèques.
    cleanall : Suppression des répertoires et fichiers temporaires
@@ -59,7 +68,9 @@
    EXO 4 : Remontée de valeurs par échange dans un fichier - OK
    EXO 5 : Fonctions POSIX vs. fonctions C - OK
    EXO 6 : Fonction grep étendue - OK
-
+   EXO 7 : Inverseur de contenu en utilisant lseek - OK
+   EXO 8 : Inverseur de contenu en utilisant pread - OK
+   
 == Réponses ==
 
    Exo 1 : Contenus possibles du fichier selon l'ordre des executions :

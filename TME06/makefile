@@ -62,6 +62,12 @@ exo5 : $(BIN)/exo5C $(BIN)/exo5POSIX
 #exo 6 :
 extended-grep: $(BIN)/extended-grep
 
+#exo 7 :
+exo7: $(BIN)/exo7
+
+#exo 8 :
+exo8: $(BIN)/exo8
+
 clean:
 	rm -f ${OBJ}/* ${BIN}/* ${LIB}/*
 

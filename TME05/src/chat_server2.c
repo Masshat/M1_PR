@@ -27,13 +27,13 @@
  * - un shm par client, sur lequel il recevera les messages broadcastés par le serv
  * - deux sémaphores par shm, pour chaque shm le diffuseur est producteur, le 
  *   récepteur est consommateur, le mutex assurera donc la consommation après
- *   production.
+ *   production, et attente de consommation avant la produciton suivante.
  */ 
-char server_name[256]; /* nom du serveur */
-int* sp_shm_server; /* segment mappé */
+char server_name[128]; /* nom du serveur */
+struct request* sp_shm_server; /* segment mappé */
 
-char mutex_prod_name[256];
-char mutex_cons_name[256];
+char mutex_prod_name[128];
+char mutex_cons_name[128];
 sem_t* mutex_prod;
 sem_t* mutex_cons;
 
@@ -42,6 +42,7 @@ sem_t* mutex_cons;
 char* clients_ids[MAX_CLIENTS];
 int nb_connected=0;
 
+struct request* sp_shm_client[MAX_CLIENTS];
 sem_t* mutex_prod_client[MAX_CLIENTS]; 
 sem_t* mutex_cons_client[MAX_CLIENTS];
 
@@ -51,6 +52,9 @@ sem_t* mutex_cons_client[MAX_CLIENTS];
 void exit_setup(int exit_value);
 void sigint_handler(int signum);
 void handle_request();
+void add_client_id(char* new_client_id);
+void remove_client_id(char* client_id);
+
 /*******************************************************************************
  * Implementation
  ******************************************************************************/
@@ -77,19 +81,22 @@ int main(int argc, char** argv)
   sigaction(SIGINT, &act, NULL);
   
   /* init nom du serveur */
+  memset(server_name, '\0', 128);
   strcat(server_name, "/");
   strcat(server_name, argv[1]);
   strcat(server_name, "_shm:0");
 
   /* init nom sem server production */
-  strcat(mutex_prod, "/");
-  strcat(mutex_prod, argv[1]);
-  strcat(mutex_prod, "_sem_prod");
+  memset(mutex_prod_name, '\0', 128);
+  strcat(mutex_prod_name, "/");
+  strcat(mutex_prod_name, argv[1]);
+  strcat(mutex_prod_name, "_sem_prod");
   
   /* init nom sem server consommation */
-  strcat(mutex_cons, "/");
-  strcat(mutex_cons, argv[1]);
-  strcat(mutex_cons, "_sem_cons");
+  memset(mutex_cons_name, '\0', 128);
+  strcat(mutex_cons_name, "/");
+  strcat(mutex_cons_name, argv[1]);
+  strcat(mutex_cons_name, "_sem_cons");
 
   /* création du shm server */
   int fd_shm_server;
@@ -111,15 +118,9 @@ int main(int argc, char** argv)
   }
 
   /* création du semaphore de production sur le shm server */
-  if( (mutex_prod=sem_open(mutex_prod_name, O_CREAT | 0_EXCL | O_RDWR, 0666, 0))
+  if( (mutex_prod=sem_open(mutex_prod_name, O_CREAT | 0_EXCL | O_RDWR, 0666, 1))
       == SEM_FAILED){
     fprintf(stderr, "Server error: sem_open: mutex_prod\n");
-    exit_setup(1);
-  }
-
-  /* initialisation du sem prod sur shm server */
-  if( sem_init(mutex_prod, 1, 1) == -1){
-    fprintf(stderr, "Server error: sem_init: mutex_prod\n");
     exit_setup(1);
   }
 
@@ -127,12 +128,6 @@ int main(int argc, char** argv)
   if( (mutex_cons=sem_open(mutex_cons_name, O_CREAT | 0_EXCL | O_RDWR, 0666, 0))
       == SEM_FAILED){
     fprintf(stderr, "Server error: sem_open: mutex_cons\n");
-    exit_setup(1);
-  }
-
-  /* initialisation du sem prod sur shm server */
-  if( sem_init(mutex_cons, 1, 0) == -1){
-    fprintf(stderr, "Server error: sem_init: mutex_cons\n");
     exit_setup(1);
   }
 
@@ -162,6 +157,8 @@ int main(int argc, char** argv)
  */
 void exit_setup(int exit_value)
 {
+  /* PARTIE DONNEES SERVEUR */
+  
   /* détachement du shm server */
   munmap(sp_shm_server, sizeof(struct request));
 
@@ -179,8 +176,26 @@ void exit_setup(int exit_value)
 
   /* destruction du sem cons sur shm server */
   sem_unlink(mutex_cons_name);
-  
 
+  /* PARTIE DONNEES CLIENTS */
+  int i;
+  for(i=0; i<nb_connected; i++){
+
+    /* fermeture du sem de production sur le shm client */
+    sem_close(mutex_prod_client[i]);
+
+    /* fermeture du sem de conso sur le shm client */
+    sem_close(mutex_cons_client[i]);
+
+    /* détachement du shm client */
+    munmap(sp_shm_client[i]);
+
+    /* désallocation du client_id */
+    free(clients_ids[i]);
+    
+  }
+  
+  /* fin avec exit_value */
   exit(exit_value);  
 }
 
@@ -197,8 +212,10 @@ void handle_request()
 {
   switch(sp_shm_server->type){
   case REQ_TYPE_LOGIN : /* cas d'une demande de connexion */
+    add_client_id(sp_shm_server->content);
     break;
   case REQ_TYPE_LOGOUT : /* cas de demande de déconnexion */
+    remove_client_id(sp_shm_server->content);
     break;
   case REQ_TYPE_MSG : /* cas d'envoi de message */
     break;
@@ -210,12 +227,132 @@ void handle_request()
 
 void add_client_id(char* new_client_id)
 {
+  /* cas de tableau plein */
   if(nb_connected == MAX_CLIENTS){
     fprintf(stderr, "Le client %s ne peut être ajouté, tableau plein\n",
 	    new_client_id);
     return;
   }
-  clients_ids[nb_connected] = (char*)malloc(256*sizeof(char));
+
+  /* ajout du client_id */
+  clients_ids[nb_connected] = (char*)malloc(128*sizeof(char));
   strcpy(clients_ids[nb_connected], new_client_id);
+
+  /* 1. init du sem de production sur le shm client : */
+  
+  /* init du nom */
+  char tmp_name[128];
+  memset(tmp_name, '\0', 128);
+  strcat(tmp_name, "/");
+  strcat(tmp_name, new_client_id);
+  strcat(tmp_name, "_sem_prod");
+
+  /* ouverture du sem */
+  sem_t* mut_prod = sem_open(tmp_name, O_RDWR);
+  if( mut_prod == SEM_FAILED ){
+    perror("Error: sem_open mut_prod client\n");
+    exit_setup(1);
+  }
+  mutex_prod_client[nb_connected] = mut_prod;
+
+  /* 2. init du sem de consommation sur le shm client : */
+
+  /* init du nom */
+  memset(tmp_name, '\0', 128);
+  strcat(tmp_name, "/");
+  strcat(tmp_name, new_client_id);
+  strcat(tmp_name, "_sem_cons");
+
+  /* ouverture du sem */
+  sem_t* mut_cons = sem_open(tmp_name, O_RDWR);
+  if( mut_cons == SEM_FAILED ){
+    perror("Error: sem_open mut_cons client\n");
+    exit_setup(1);
+  }
+  mutex_cons_client[nb_connected] = mut_cons;
+
+  /* 3. init shm client */
+
+  /* init du nom */
+  memset(tmp_name, '\0', 128);
+  strcat(tmp_name, "/");
+  strcat(tmp_name, new_client_id);
+  strcat(tmp_name, "_shm:0");
+
+  /* ouverture du shm */
+  int tmp_fd = shm_open(tmp_name, O_RDWR);
+  if( tmp_fd == -1 ){
+    perror("Error: shm_open client\n");
+    exit_setup(1);
+  }
+
+  /* map du shm */
+  sp_shm_client[nb_connected] = mmap(NULL, sizeof(struct request),
+				     PROT_READ | PROT_WRITE, MAP_SHARED,
+				     tmp_fd, 0);
+  if( sp_shm_client[nb_connected] == MAP_FAILED ){
+    perror("Error: mmap client\n");
+    exit_setup(1);
+  }
+
+  /* le client se bloque sur son mutex_prod comme attente de confirmation
+   * de connexion
+   */
+
+  /* on confirme donc la connexion au client */
+  sem_post(mutex_prod_client[nb_connected]);
+
+  /* on peut enfin dire qu'on a un client en plus */
   nb_connected++;
+
+  return;
+}
+
+void remove_client_id(char* client_id)
+{
+  /* recherche de l'index du client */
+  int i, index;
+  for( i=0; i<nb_connected; i++){
+    if( !strcmp(client_id, clients_ids[index]) ){
+      index = i;
+      break;
+    }
+  }
+
+  /* désallocation du client_id */
+  free(clients_ids[index]);
+
+  /* décallage des autres ids */
+  for(i=index; i<nb_connected-1; i++){
+    clients_ids[i] = clients_ids[i+1];
+  }
+
+  /* fermeture du sem de production sur le shm client */
+  sem_close(mutex_prod_client[index]);
+
+  /* décallage des autres */
+  for(i=index; i<nb_connected-1; i++){
+    mutex_prod_client[i] = mutex_prod_client[i+1];
+  }
+
+  /* fermeture du sem de conso sur le shm client */
+  sem_close(mutex_cons_client[index]);
+
+  /* décallage du reste */
+  for(i=index; i<nb_connected-1; i++){
+    mutex_cons_client[i] = mutex_cons_client[i+1];
+  }
+
+  /* détachement du shm client */
+  munmap(sp_shm_client[index]);
+
+  /* décallage du reste */
+  for(i=index; i<nb_connected-1; i++){
+    sp_shm_client[i] = sp_shm_client[i+1];
+  }
+
+  /* et un client en moins */
+  nb_connected--;
+
+  return;
 }

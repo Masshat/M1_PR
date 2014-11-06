@@ -32,7 +32,7 @@
 
    EXO 1 : Remontée de valeurs par partage de mémoire - OK
    EXO 2 : Barrière avec sémaphores, sans compteur partagé - OK
-   EXO 3 : j'a ifais u ngrand effort mais ça ne marche toujours pas
+   EXO 3 : 
 
 == Réponses ==
    Exo 2 : Oui c'est possible, il suffit que l'un n'agisse pas comme les autres et se mette en attente active sur les entrée avant d'ouvrir la barrière.

@@ -1,0 +1,47 @@
+== Participants : 1 ==
+
+   TOUMLILT Ilyas - 3261538
+   
+== Fichiers inclus ==
+   
+   EXO_1 :
+   -> src/exo1.c : création de N fils, chacun génère sa random_val et la communique au père au moyen de datagrammes UDP. Une seule socket UDP est utilisée.
+
+   EXO_2 :
+   -> src/recvfile.c
+   -> src/sendfile.c
+
+   EXO_3 :
+   -> src/env_client.c
+   -> src/env_server.c
+
+   EXO_4 :
+   -> ftpserver.c :
+   -> ftpclient.c :
+
+== Directives de 'makefile' ==
+
+   all : cree tous les executables, sans les executer.
+
+   exo1 : compilation de l'exo1, produit bin/exo1 
+   runexo1 : compilation de l'exo1 + exécution.
+
+   exo2 : produit l'exec de l'exo 2
+
+   exo3 : compile + ld => bin/env_client + bin/env_server
+
+   exo4 : compile + edite les liens => bin/ftpserver + bin/ftpclient
+
+   directories : création des répertoires temporaires s'ils n'existent pas déjà
+   clean : Suppression de tous les fichiers binaires, objet et bibliothèques.
+   cleanall : Suppression des répertoires et fichiers temporaires
+
+== Etat d'avancement ==
+
+   EXO 1 : Remontée des valeurs par communication distante - OK
+   EXO 2 : Recopie de fichier par communication distante - OK
+   EXO 3 : Serveur d'environnement - OK
+   EXO 4 : Mini-serveur FTP - OK
+   
+== Réponses ==
+

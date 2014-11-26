@@ -1,0 +1,49 @@
+== Participants : 1 ==
+
+   TOUMLILT Ilyas - 3261538
+   
+== Fichiers inclus ==
+   
+   EXO_1 :
+   -> ftpserver.c :
+   -> ftpclient.c :
+
+   EXO_2 :
+   -> mychat.c :
+
+   EXO_3 :
+   -> sonar.c :
+   -> ponger.c :
+
+   EXO_4 :
+   -> src/connectclient.c : fichier fourni
+   -> src/connectserver.c :
+   -> src/servDir/cxlog : log file.
+   
+   
+== Directives de 'makefile' ==
+
+   all : cree tous les executables, sans les executer.
+
+   exo1: => bin/ftpserver bin/ftpclient
+
+   exo2: => bin/mychat.c
+   runexo2 : lance bin/mychat avec des params génériques.
+
+   exo3: => bin/sonar bin/ponger
+
+   exo4: => bin/connectclient bin/connectserver
+
+   directories : création des répertoires temporaires s'ils n'existent pas déjà
+   clean : Suppression de tous les fichiers binaires, objet et bibliothèques.
+   cleanall : Suppression des répertoires et fichiers temporaires
+
+== Etat d'avancement ==
+
+   EXO 1 : Mini-serveur FTP multi-threadé
+   EXO 2 : Mini-Chat - OK
+   EXO 3 : Sonar - OK
+   EXO 4 : Journalisation de connexions - OK
+   
+== Réponses ==
+

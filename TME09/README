@@ -1,0 +1,59 @@
+== Participants : 1 ==
+
+   TOUMLILT Ilyas - 3261538
+   
+== Fichiers inclus ==
+   
+   EXO_1 :
+   -> src/exo1.c : création d'un fichier vide passé en argument puis ecriture de la chaîne en mode asynchrone.
+
+   EXO_2 :
+   -> src/exo2.c : reporise de l'exo 1 avec fin notifiée en armant un temporisateur
+
+   EXO_3 :
+   -> src/exo3.c : reprise de l'exo4 du tme6 avec remontée des valeurs par communicatiosn asynchrones
+
+   EXO_4 :
+   -> src:exo4.c : inversement de l'ordre de 10 chars par ecriture asynchrone
+
+   EXO_5 :
+   -> src/exo5.c : création de N processus qui afficherons leurs pid par ordre inverse de création 
+
+   EXO_6 :
+   -> src/exo6.c
+
+   EXO_7 :
+   -> src/exo7.c
+   
+== Directives de 'makefile' ==
+
+   all : cree tous les executables, sans les executer.
+
+   exo1 : compile exo1.c
+   exo2 : compile et edite les liens de l'exo 2
+   exo3 : compile et ld l'exo3
+   exo4 : idem pour l'exo 4
+   exo5 : idem pour l'exo 5
+   exo6 : idem pour l'exo 6
+   exo7 : idem pour l'exo 7 
+
+   directories : création des répertoires temporaires s'ils n'existent pas déjà
+   clean : Suppression de tous les fichiers binaires, objet et bibliothèques.
+   cleanall : Suppression des répertoires et fichiers temporaires
+
+== Etat d'avancement ==
+
+   EXO 1 - E/S Asynchrone - OK
+   EXO 2 - E/S asynchrones et temporisateur - OK
+   EXO 3 - Remontée des valeurs - OK
+   EXO 4 - Recopie farfelue - OK
+   EXO 5 - Chaîne de processus - OK
+   EXO 6 - Remontée de valeurs par signaux - OK
+   EXO 7 - Barrière de synchro - OK
+   
+== Réponses ==
+
+   EXO 3 :
+   -> 1°) Il n'est pas necessaire de "synchroniser" le pere avec ses fils.
+   -> 2°) Il est necessaire de synchroniser les fils afin que ceux-ci n'ecrivent pas sur la meme ligne
+    du fichier et ainsi pour ne pas ecraser des valeurs inscrites.
